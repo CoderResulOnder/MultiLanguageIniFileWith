@@ -1,0 +1,219 @@
+   #region MultiLanguage
+        FileIniDataParser parser = new FileIniDataParser();
+        IniData inidata;
+        public void iniDosyaislemeleriComboboxtanDilleriDoldur(ComboBox cmbLanguageSelection)
+        {
+            //okumak icin:
+            inidata = parser.ReadFile("MultiLanguage.ini");
+            //string useFullScreenStr = data["General"]["fullscreen"];
+            //bool useFullScreen = bool.Parse(useFullScreenStr); //useFullScreenStr = "true"
+
+            int a = inidata.Sections.Count;
+
+
+            cmbLanguageSelection.Items.Clear();
+            foreach (SectionData sd in inidata.Sections.ToList())
+            {
+                string i = sd.SectionName;
+                cmbLanguageSelection.Items.Add(i.ToUpper());
+            }
+            if (cmbLanguageSelection.Items.Count >= 1)
+            {
+                cmbLanguageSelection.SelectedIndex = 0;
+            }
+
+        }
+
+
+        public void getAllCurrentCulterName()
+        {
+
+            string path = @"C:\CulterInfo\AllCulterInfo.txt";
+            Directory.CreateDirectory(@"C:\CulterInfo");
+
+            if (File.Exists(path)==false)
+            {
+             
+                using (System.IO.StreamWriter fs = new System.IO.StreamWriter(path, true))
+                {
+                    // Add some information to the file.
+                    
+                    CultureInfo[] cultures = CultureInfo.GetCultures(CultureTypes.NeutralCultures);
+
+                    foreach (var culture in cultures)
+                    {
+                        string CulterInfoTXT = culture.TextInfo.CultureName + "_____" + culture.DisplayName;
+
+                        fs.WriteLine(CulterInfoTXT);
+                    }
+
+                    fs.Close();
+                }
+            }
+        
+
+        }
+
+        public enum iniBuyukKucukKontrol
+        {
+            TamamiBuyuk, TamamiKucuk, IlkHarflerBuyukDigerleriKucuk
+        }
+
+        public string iniDataGetValue(string aranan, iniBuyukKucukKontrol gelen)
+        {
+
+            if (inidata[Dil][aranan] == null || inidata[Dil][aranan] == "")
+            {
+                return aranan;
+            }
+            else
+            {
+                switch (gelen)
+                {
+                    case  iniBuyukKucukKontrol.TamamiBuyuk:
+                        if (inidata[Dil]["CultureName"] != null)
+                        {
+                            return CultureInfo.GetCultureInfo(inidata[Dil]["CultureName"]).TextInfo.ToUpper(inidata[Dil][aranan].ToString());
+
+                        }
+                        return CultureInfo.CurrentCulture.TextInfo.ToUpper(inidata[Dil][aranan].ToString());
+
+                    case  iniBuyukKucukKontrol.TamamiKucuk:
+
+                        if (inidata[Dil]["CultureName"] != null)
+                        {
+                            return CultureInfo.GetCultureInfo(inidata[Dil]["CultureName"]).TextInfo.ToLower(inidata[Dil][aranan].ToString());
+
+                        }
+                        return CultureInfo.CurrentCulture.TextInfo.ToLower(inidata[Dil][aranan].ToString());
+
+
+                    case  iniBuyukKucukKontrol.IlkHarflerBuyukDigerleriKucuk:
+
+
+                        if (inidata[Dil]["CultureName"] != null)
+                        {
+                            return CultureInfo.GetCultureInfo(inidata[Dil]["CultureName"]).TextInfo.ToTitleCase(inidata[Dil][aranan].ToString());
+
+                        }
+                        return CultureInfo.CurrentCulture.TextInfo.ToTitleCase(inidata[Dil][aranan].ToString());
+
+                    default:
+                        return inidata[Dil][aranan].ToString();
+
+                }
+            }
+        } 
+        #endregion
+
+
+
+
+iniDataGetValue("Analiz",  iniBuyukKucukKontrol.IlkHarflerBuyukDigerleriKucuk)
+
+
+
+
+İni Dosyası nının içerigi:
+
+[TR]
+CultureName=tr-TR
+Analiz = analiz
+Olcum = ölçüm
+SurekliOlcum = sürekli ölçüm
+Durdur = durdur
+Kaydet = kaydet
+Rapor = rapor
+KutuphaneyeEkle = kütüphaneye ekle
+Intensity = intensity(count)
+RamanShift = raman shift(cmˉ¹) 
+KalitatifAnaliz = kalitatif analiz
+XmlYonetimi = xml yönetimi
+Grafik = grafik
+Veri = veri
+KantitatifAnaliz = kantitatif analiz
+VeriGoruntule = veri görüntüle
+KutuphaneYonetimi = kütüphane yönetimi
+OlcumSuresi = ölçüm süresi
+Cozunurluk = çözünürlük
+OlcumSayisi = ölçüm sayısı
+OlcumTuru = ölçüm türü
+LazerGucu = lazer gücü
+BaselineCapi = baseline çapı
+KutuphaneAdi = kütüphane adı
+KayitliOrnekAdi = kayitli örnek adı
+BenzerlikYuzdesi = benzerlik yuzdesi
+FarkDegeri = fark degeri
+id = kayit no
+ParametreAdi = parametre adı
+xmlDosyaAdi = xml dosya adı
+Sonuc = sonuç
+EnYuksek = en yüksek
+Yuksek = yüksek
+Orta = orta 
+Dusuk = düşük
+EnDusuk = en düşük
+Karanlik = karanlık
+Aydinlik = aydınlık
+Fark = fark
+Dalgaboyu = dalgaboyu
+Normalize = normalize
+Baseline = baseline
+NormalOlcumSonuclari = standart ölçüm sonuçları
+SurekliOlcumSonuclari = sürekli ölçüm sonuçları
+Evet =Evet
+Hayir=Hayır
+UygulamadanCikmayiOnayliyormusunuz=uygulamadan çıkış yapmak üzeresiniz onaylıyormusunuz?
+
+
+[ENG]
+CultureName=en-US
+Analiz = analysis
+Olcum = measurement
+SurekliOlcum = continuous measurement
+Durdur = stop
+Kaydet = save
+Rapor = report
+KutuphaneyeEkle = add to library
+Intensity = intensity(count)
+RamanShift = raman shift(cmˉ¹) 
+KalitatifAnaliz = qualitative analysis
+XmlYonetimi = xml management
+Grafik = graph
+Veri = data
+KantitatifAnaliz = quantitative analysis
+VeriGoruntule = display data
+KutuphaneYonetimi = library management
+OlcumSuresi=measurement time
+Cozunurluk = resolution
+OlcumSayisi = measurement count
+OlcumTuru = measurement type
+LazerGucu = laser power
+BaselineCapi = baseline diameter
+KutuphaneAdi = library name
+KayitliOrnekAdi = registered sample name
+BenzerlikYuzdesi = similarity percentage
+FarkDegeri = differance value
+id = registration number
+ParametreAdi = parameter name
+xmlDosyaAdi = xml file name
+Sonuc = result
+EnYuksek = very high
+Yuksek = high
+Orta = medium 
+Dusuk = low
+EnDusuk = very low
+Karanlik = dark
+Aydinlik=light
+Fark = difference
+Dalgaboyu = wavelength
+Normalize = normalize
+Baseline = baseline
+NormalOlcumSonuclari=standard measurement result
+SurekliOlcumSonuclari=continuous measurement result
+Evet =ok
+Hayir=no
+UygulamadanCikmayiOnayliyormusunuz=are you confirming that you will be leaving the application?
+[AR]
+CultureName=ar-SA
+Analiz = تحليل
